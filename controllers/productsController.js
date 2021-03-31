@@ -1,38 +1,33 @@
+const productsModel = require('../Models/ProductosModel')
+
 module.exports = {
-    getAll: function (req, res, next) {
-        const products = [
-            {
-                id: 1,
-                name: "darth vader",
-            },
-            {
-                id: 2,
-                name: "luke skywalker",
-            }
-        ]
-        res.json(products)
+    getAll: async function (req, res, next) {
+        const characters = await productsModel.find()
+        res.json(characters)
     },
-    getById: function (req, res, next) {
-        res.json(req.params)
-        const product = [
-            {
-                id: 1,
-                name: "darth vader",
-            },
-        ]
-        res.json(product)
+    getById: async function (req, res, next) {
+        const character = await productsModel.findById(req.params.id)
+        res.json(character)
     },
-    update: function (req, res, next) {
-        console.log(req.params)
-        res.json(req.params)
+    update: async function (req, res, next) {
+        const response = await productsModel.updateOne({ _id: req.params.id }, req.body)
+        res.json(response)
     },
-    create: function (req, res, next) {
+    create: async function (req, res, next) {
         console.log(req.body)
-        res.json(req.body)
+
+        const document = new productsModel({
+            name: req.body.name,
+            weapon: req.body.weapon,
+            favoriteColor: req.body.favoriteColor
+        })
+
+        const response = await document.save()
+        res.json(response)
     },
-    delete: function (req, res, next) {
-        console.log(req.params)
-        res.json("delete")
+    delete: async function (req, res, next) {
+        const response = await productsModel.deleteOne({ _id: req.params.id })
+        res.json(response)
     }
 
 }

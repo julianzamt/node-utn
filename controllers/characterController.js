@@ -2,8 +2,18 @@ const characterModel = require('../Models/characterModel')
 
 module.exports = {
     getAll: async function (req, res, next) {
+        let queryFind = {}
+        if (req.query.category) {
+            queryFind = { category: req.query.category } // Pueden utilizarse regex para ampliar la búsqueda - Mongoose las facilita
+        }
+
         try {
-            const characters = await characterModel.find().populate("category")
+            const characters = await characterModel.paginate(queryFind, {
+                sort: { howMuchILoveIt: -1 },
+                populate: "category",
+                limit: req.query.limit || 3,
+                page: req.query.page || 1
+            })
             res.json(characters)
         }
         catch (e) {

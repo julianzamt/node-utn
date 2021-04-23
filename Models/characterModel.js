@@ -24,4 +24,5 @@ const characterSchema = new mongoose.Schema({
     }
 })
 
+characterSchema.plugin(mongoose.mongoosePaginate)
 module.exports = mongoose.model("Character", characterSchema)

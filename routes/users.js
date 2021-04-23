@@ -7,7 +7,7 @@ router.get('/', function (req, res, next) {
 });
 
 router.post('/register', function (req, res, next) {
-  res.send('register/login route!');
+  res.send('register/register route!');
 });
 
 router.post('/login', function (req, res, next) {

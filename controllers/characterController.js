@@ -3,8 +3,11 @@ const characterModel = require('../Models/characterModel')
 module.exports = {
     getAll: async function (req, res, next) {
         let queryFind = {}
+        if (req.query.name) {
+            queryFind = { name: { $regex: ".*" + req.query.name + ".*", $options: "i" } }
+        }
         if (req.query.category) {
-            queryFind = { category: req.query.category } // Pueden utilizarse regex para ampliar la búsqueda - Mongoose las facilita
+            queryFind = { ...queryFind, category: req.query.category }
         }
 
         try {
@@ -48,8 +51,8 @@ module.exports = {
                 name: req.body.name,
                 weapon: req.body.weapon,
                 howMuchILoveIt: req.body.howMuchILoveIt,
-                category: req.body.category
-
+                category: req.body.category,
+                createdBy: req.body.tokenData.userId
             })
             const newCharacter = await document.save()
             res.json(newCharacter)
@@ -59,7 +62,7 @@ module.exports = {
             next(e)
         }
     },
-    delete: async function (req, res, next) {
+    deleteById: async function (req, res, next) {
         try {
             const response = await characterModel.deleteOne({ _id: req.params.id })
             res.json(response)

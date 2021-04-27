@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const jwt = require('jsonwebtoken')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -14,6 +15,22 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+
+// token configuration
+app.set('secretKey', 'utn2021')
+const validateUser = (req, res, next) => {
+  jwt.verify(req.headers['x-access-token'], req.app.get("secretKey"), (err, decoded) => {
+    if (err) {
+      res.json({ message: err.message })
+      return
+    }
+    else {
+      req.body.tokenData = decoded;
+      next()
+    }
+  })
+}
+app.validateUser = validateUser
 
 app.use(logger('dev'));
 app.use(express.json());
